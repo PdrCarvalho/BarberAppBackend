@@ -1,6 +1,9 @@
 import * as Yup from 'yup';
-import { isBefore, startOfHour, parseISO } from 'date-fns';
-
+import {
+  isBefore, startOfHour, parseISO, format,
+} from 'date-fns';
+import pt from 'date-fns/locale/pt';
+import Notification from '../schemas/Notification';
 import Appointment from '../models/appointment';
 import User from '../models/User';
 import File from '../models/File';
@@ -56,8 +59,17 @@ class ApointmenteController {
       return res.status(400).json({ error: 'already booked time' });
     }
     const appointment = await Appointment.create({ user_id: req.userId, provider_id, date });
+    console.log(req.userId);
+    const user = await User.findByPk(req.userId);
+    const formatDate = format(hourdStart,
+      "'dia' dd 'de' MMMM', às' H:mm'h'",
+      { locale: pt });
+    console.log(user);
+    await Notification.create({
+      content: `Novo agendamento de ${user.name} para ${formatDate}`,
+      user: provider_id,
+    });
     return res.json(appointment);
   }
 }
-
 export default new ApointmenteController();
