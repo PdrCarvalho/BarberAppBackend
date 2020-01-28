@@ -3,7 +3,7 @@ module.exports = {
   host: 'localhost',
   username: 'postgres',
   password: 'postgres',
-  database: 'barberapp',
+  database: 'postgres',
   //   operatorAliases: false,
   define: {
     timestamps: true,
